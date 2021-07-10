@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     buildToolsVersion build_version
-    compileSdkVersion compile_version
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion min_version
@@ -13,6 +13,11 @@ android {
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    applicationVariants.all { variant ->
+        variant.getRuntimeConfiguration().exclude group: 'com.google.code.findbugs', module: 'jsr305'
+        variant.getRuntimeConfiguration().exclude group: 'org.nd4j', module: 'protobuf'
     }
 
     buildTypes {
@@ -37,7 +42,9 @@ dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+
     implementation project(':fedmlsdk')
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
@@ -55,10 +62,11 @@ dependencies {
     // guava
     implementation "com.google.guava:guava:$guava_version"
     // Deeplearning4J
-    implementation (group: 'org.deeplearning4j', name: 'deeplearning4j-core', version: '{{page.version}}') {
+    implementation (group: 'org.deeplearning4j', name: 'deeplearning4j-core', version: '1.0.0-beta6') {
         exclude group: 'org.bytedeco', module: 'opencv-platform'
         exclude group: 'org.bytedeco', module: 'leptonica-platform'
         exclude group: 'org.bytedeco', module: 'hdf5-platform'
+        exclude group: 'org.nd4j', module: 'guava'
     }
     implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6'
     implementation group: 'org.nd4j', name: 'nd4j-native', version: '1.0.0-beta6', classifier: "android-arm"

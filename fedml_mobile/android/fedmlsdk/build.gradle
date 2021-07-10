@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     buildToolsVersion build_version
-    compileSdkVersion compile_version
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion min_version
@@ -31,7 +31,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     // SDK
     implementation 'androidx.ads:ads-identifier:1.0.0-alpha04'
     implementation "com.google.code.gson:gson:$gson_version"
