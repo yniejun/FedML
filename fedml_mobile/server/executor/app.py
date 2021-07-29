@@ -3,10 +3,14 @@ import os
 import sys
 
 import argparse
+import time
+
 import numpy as np
 import torch
 import wandb
+import datetime
 
+from fedml_mobile.server.executor.conf.conf import RESOURCE_DIR_PATH, MODEL_FOLDER_PATH
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../../")))
 
@@ -27,7 +31,7 @@ from fedml_api.model.nlp.rnn import RNN_OriginalFedAvg
 
 from fedml_core.distributed.communication.observer import Observer
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, abort, send_from_directory, render_template
 
 
 def add_args(parser):
@@ -74,7 +78,7 @@ def add_args(parser):
     parser.add_argument('--comm_round', type=int, default=200,
                         help='how many round of communications we shoud use')
 
-    parser.add_argument('--is_mobile', type=int, default=1,
+    parser.add_argument('--is_mobile', type=bool, default=True,
                         help='whether the program is running on the FedML-Mobile server side')
 
     parser.add_argument('--frequency_of_the_test', type=int, default=1,
@@ -91,6 +95,7 @@ def add_args(parser):
 
 # HTTP server
 app = Flask(__name__)
+app.config['MOBILE_PREPROCESSED_DATASETS'] = './preprocessed_dataset/'
 
 # parse python script input parameters
 parser = argparse.ArgumentParser()
@@ -98,12 +103,38 @@ args = add_args(parser)
 
 device_id_to_client_id_dict = dict()
 
+ALLOWED_EXTENSIONS = {'txt', 'png', 'jpg', 'JPG', 'PNG'}
+
+
+# file EXTENSIONS check
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+
+@app.route('/', methods=['GET'])
+def index():
+    return 'backend service for Fed_mobile'
+
+
+@app.route('/get-preprocessed-data/<dataset_name>')
+def get_preprocessed_data(dataset_name):
+    directory = app.config['MOBILE_PREPROCESSED_DATASETS'] + args.dataset.upper() + '/' + args.dataset.upper() +'_mobile_zip/'
+    try:
+        return send_from_directory(
+            directory,
+            filename='0' + '.zip',
+            as_attachment=True)
+
+    except FileNotFoundError:
+        abort(404)
+
 
 @app.route('/api/register', methods=['POST'])
 def register_device():
     global device_id_to_client_id_dict
     # __log.info("register_device()")
-    device_id = request.args['device_id']
+    device_id = request.form['device_id']
+    # device_id = request.args['device_id']
     registered_client_num = len(device_id_to_client_id_dict)
     if device_id in device_id_to_client_id_dict:
         client_id = device_id_to_client_id_dict[device_id]
@@ -130,6 +161,35 @@ def register_device():
                     "executorTopic": "executorTopic",
                     "client_id": client_id,
                     "training_task_args": training_task_args})
+
+
+@app.route('/api/upload', methods=['POST'], strict_slashes=False)
+def api_upload():
+    # TODO: parse form get training info
+    print(request.values['filename'])
+    file_dir = MODEL_FOLDER_PATH
+    if not os.path.exists(file_dir):
+        os.makedirs(file_dir)
+    f = request.files['model_file']
+    if f and allowed_file(f.filename):
+        fname = f.filename
+        # get file without extension
+        name_without_ext = fname.rsplit('.', 1)[0]
+        # get file extension
+        ext = fname.rsplit('.', 1)[1]
+        unix_time = int(time.mktime(datetime.datetime.now().timetuple()))
+        # modify file name
+        new_filename = '%s_%s.%s' % (name_without_ext, str(unix_time), ext)
+        # save to the upload folder
+        f.save(os.path.join(file_dir, new_filename))
+        return jsonify({"errno": 0, "errmsg": "upload success!"})
+    else:
+        return jsonify({"errno": 1001, "errmsg": "upload fail!"})
+
+
+@app.route("/download/<path:filename>")
+def downloader(filename):
+    return send_from_directory(RESOURCE_DIR_PATH, filename, as_attachment=True)
 
 
 def load_data(args, dataset_name):

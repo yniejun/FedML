@@ -9,7 +9,7 @@ pyflakes .
 source "$HOME/miniconda/etc/profile.d/conda.sh"
 conda activate fedml
 
-wandb login ee0b5f53d949c84cee7decbe7a629e63fb2f8408
+wandb login 3da5dc700f370e170bbc9d4e272d783c9d87cdc6
 wandb off
 
 # 1. search

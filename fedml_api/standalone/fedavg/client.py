@@ -53,6 +53,9 @@ class Client:
             batch_loss = []
             for batch_idx, (x, labels) in enumerate(self.local_training_data):
                 x, labels = x.to(self.device), labels.to(self.device)
+                if (self.args.model == 'cnn'):
+                    x = x.view(len(x), 28, 28)
+                    # logging.info("x.size = " + str(x.size()))
                 # logging.info("x.size = " + str(x.size()))
                 # logging.info("labels.size = " + str(labels.size()))
                 self.model.zero_grad()
@@ -91,6 +94,8 @@ class Client:
             for batch_idx, (x, target) in enumerate(test_data):
                 x = x.to(self.device)
                 target = target.to(self.device)
+                if (self.args.model == 'cnn'):
+                    x = x.view(len(x), 28, 28)
                 pred = model_global(x)
                 loss = self.criterion(pred, target)
 

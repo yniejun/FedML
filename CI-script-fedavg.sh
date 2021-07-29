@@ -1,9 +1,9 @@
 #!/bin/bash
 
-set -ex
+#set -ex
 
 # code checking
-pyflakes .
+#pyflakes .
 
 # activate the fedml environment
 source "$HOME/miniconda/etc/profile.d/conda.sh"
@@ -90,9 +90,9 @@ python3 ./mobile_client_simulator.py --client_uuid '1' &
 bg_pid_client1=$!
 echo $bg_pid_client1
 
-sleep 80
-kill $bg_pid_server
-kill $bg_pid_client0
-kill $bg_pid_client1
+#sleep 80
+#kill $bg_pid_server
+#kill $bg_pid_client0
+#kill $bg_pid_client1
 
 #cd ./../../../

@@ -10,7 +10,6 @@ import wandb
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "../../../")))
 
-
 from fedml_api.data_preprocessing.cifar10.data_loader import load_partition_data_cifar10
 from fedml_api.data_preprocessing.cifar100.data_loader import load_partition_data_cifar100
 from fedml_api.data_preprocessing.cinic10.data_loader import load_partition_data_cinic10
@@ -28,6 +27,7 @@ from fedml_api.model.nlp.rnn import RNN_OriginalFedAvg, RNN_StackOverFlow
 
 from fedml_api.data_preprocessing.MNIST.data_loader import load_partition_data_mnist
 from fedml_api.model.linear.lr import LogisticRegression
+from fedml_api.model.linear.cnn import CNN_OriginalFedAvg
 from fedml_api.model.cv.resnet_gn import resnet18
 
 from fedml_api.standalone.fedavg.fedavg_trainer import FedAvgTrainer
@@ -96,7 +96,7 @@ def load_data(args, dataset_name):
     args_batch_size = args.batch_size
     if args.batch_size <= 0:
         full_batch = True
-        args.batch_size = 128 # temporary batch size
+        args.batch_size = 128  # temporary batch size
     else:
         full_batch = False
 
@@ -138,18 +138,21 @@ def load_data(args, dataset_name):
         train_data_local_num_dict, train_data_local_dict, test_data_local_dict, \
         class_num = load_partition_data_federated_cifar100(args.dataset, args.data_dir)
         args.client_num_in_total = client_num
+
     elif dataset_name == "stackoverflow_lr":
         logging.info("load_data. dataset_name = %s" % dataset_name)
         client_num, train_data_num, test_data_num, train_data_global, test_data_global, \
         train_data_local_num_dict, train_data_local_dict, test_data_local_dict, \
         class_num = load_partition_data_federated_stackoverflow_lr(args.dataset, args.data_dir)
         args.client_num_in_total = client_num
+
     elif dataset_name == "stackoverflow_nwp":
         logging.info("load_data. dataset_name = %s" % dataset_name)
         client_num, train_data_num, test_data_num, train_data_global, test_data_global, \
         train_data_local_num_dict, train_data_local_dict, test_data_local_dict, \
         class_num = load_partition_data_federated_stackoverflow_nwp(args.dataset, args.data_dir)
         args.client_num_in_total = client_num
+
     else:
         if dataset_name == "cifar10":
             data_loader = load_partition_data_cifar10
@@ -165,21 +168,26 @@ def load_data(args, dataset_name):
                                 args.partition_alpha, args.client_num_in_total, args.batch_size)
 
     if centralized:
-        train_data_local_num_dict = {0: sum(user_train_data_num for user_train_data_num in train_data_local_num_dict.values())}
-        train_data_local_dict = {0: [batch for cid in sorted(train_data_local_dict.keys()) for batch in train_data_local_dict[cid]]}
-        test_data_local_dict = {0: [batch for cid in sorted(test_data_local_dict.keys()) for batch in test_data_local_dict[cid]]}
+        train_data_local_num_dict = {
+            0: sum(user_train_data_num for user_train_data_num in train_data_local_num_dict.values())}
+        train_data_local_dict = {
+            0: [batch for cid in sorted(train_data_local_dict.keys()) for batch in train_data_local_dict[cid]]}
+        test_data_local_dict = {
+            0: [batch for cid in sorted(test_data_local_dict.keys()) for batch in test_data_local_dict[cid]]}
         args.client_num_in_total = 1
 
     if full_batch:
         train_data_global = combine_batches(train_data_global)
         test_data_global = combine_batches(test_data_global)
-        train_data_local_dict = {cid: combine_batches(train_data_local_dict[cid]) for cid in train_data_local_dict.keys()}
+        train_data_local_dict = {cid: combine_batches(train_data_local_dict[cid]) for cid in
+                                 train_data_local_dict.keys()}
         test_data_local_dict = {cid: combine_batches(test_data_local_dict[cid]) for cid in test_data_local_dict.keys()}
         args.batch_size = args_batch_size
 
     dataset = [train_data_num, test_data_num, train_data_global, test_data_global,
                train_data_local_num_dict, train_data_local_dict, test_data_local_dict, class_num]
     return dataset
+
 
 def combine_batches(batches):
     full_x = torch.from_numpy(np.asarray([])).float()
@@ -189,12 +197,13 @@ def combine_batches(batches):
         full_y = torch.cat((full_y, batched_y), 0)
     return [(full_x, full_y)]
 
+
 def create_model(args, model_name, output_dim):
     logging.info("create_model. model_name = %s, output_dim = %s" % (model_name, output_dim))
     model = None
-    if model_name == "lr" and args.dataset == "mnist":
+    if model_name == "cnn" and args.dataset == "mnist":
         logging.info("LogisticRegression + MNIST")
-        model = LogisticRegression(28 * 28, output_dim)
+        model = CNN_OriginalFedAvg()
     elif model_name == "cnn" and args.dataset == "femnist":
         logging.info("CNN + FederatedEMNIST")
         model = CNN_DropOut(False)
@@ -240,10 +249,10 @@ if __name__ == "__main__":
     # Set the random seed. The np.random seed determines the dataset partition.
     # The torch_manual_seed determines the initial weight.
     # We fix these two, so that we can reproduce the result.
-    random.seed(0)
-    np.random.seed(0)
-    torch.manual_seed(0)
-    torch.cuda.manual_seed_all(0)
+    random.seed()
+    np.random.seed()
+    # torch.manual_seed()
+    # torch.cuda.manual_seed_all()
 
     # load data
     dataset = load_data(args, args.dataset)

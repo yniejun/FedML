@@ -106,19 +106,19 @@ class FedAvgTrainer(object):
     def local_test_on_all_clients(self, model_global, round_idx):
         logging.info("################local_test_on_all_clients : {}".format(round_idx))
         train_metrics = {
-            'num_samples' : [],
-            'num_correct' : [],
-            'precisions' : [],
-            'recalls' : [],
-            'losses' : []
+            'num_samples': [],
+            'num_correct': [],
+            'precisions': [],
+            'recalls': [],
+            'losses': []
         }
 
         test_metrics = {
-            'num_samples' : [],
-            'num_correct' : [],
-            'precisions' : [],
-            'recalls' : [],
-            'losses' : []
+            'num_samples': [],
+            'num_correct': [],
+            'precisions': [],
+            'recalls': [],
+            'losses': []
         }
 
         client = self.client_list[0]
@@ -170,14 +170,16 @@ class FedAvgTrainer(object):
         test_recall = sum(test_metrics['recalls']) / sum(test_metrics['num_samples'])
 
         if self.args.dataset == "stackoverflow_lr":
-            stats = {'training_acc': train_acc, 'training_precision': train_precision, 'training_recall': train_recall, 'training_loss': train_loss}
+            stats = {'training_acc': train_acc, 'training_precision': train_precision, 'training_recall': train_recall,
+                     'training_loss': train_loss}
             wandb.log({"Train/Acc": train_acc, "round": round_idx})
             wandb.log({"Train/Pre": train_precision, "round": round_idx})
             wandb.log({"Train/Rec": train_recall, "round": round_idx})
             wandb.log({"Train/Loss": train_loss, "round": round_idx})
             logging.info(stats)
 
-            stats = {'test_acc': test_acc, 'test_precision': test_precision, 'test_recall': test_recall, 'test_loss': test_loss}
+            stats = {'test_acc': test_acc, 'test_precision': test_precision, 'test_recall': test_recall,
+                     'test_loss': test_loss}
             wandb.log({"Test/Acc": test_acc, "round": round_idx})
             wandb.log({"Test/Pre": test_precision, "round": round_idx})
             wandb.log({"Test/Rec": test_recall, "round": round_idx})
