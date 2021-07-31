@@ -12,9 +12,12 @@ logger.setLevel(logging.INFO)
 
 client_ids_train = None
 client_ids_test = None
-DEFAULT_TRAIN_CLINETS_NUM = 342477
-DEFAULT_TEST_CLIENTS_NUM = 204088
-DEFAULT_BATCH_SIZE = 100
+# DEFAULT_TRAIN_CLINETS_NUM = 342477
+# DEFAULT_TEST_CLIENTS_NUM = 204088
+# DEFAULT_BATCH_SIZE = 100
+DEFAULT_TRAIN_CLINETS_NUM = 300
+DEFAULT_TEST_CLIENTS_NUM = 200
+DEFAULT_BATCH_SIZE = 10
 train_file_path = '../../../data/stackoverflow/datasets/stackoverflow_train.h5'
 test_file_path = '../../../data/stackoverflow/datasets/stackoverflow_test.h5'
 heldout_file_path = '../../../data/stackoverflow/datasets/stackoverflow_held_out.h5'
