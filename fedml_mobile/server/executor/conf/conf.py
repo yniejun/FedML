@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from ruamel import yaml
+import yaml
 
 _BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 print("_BASE_DIR:%s" % _BASE_DIR)
