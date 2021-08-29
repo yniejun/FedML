@@ -37,8 +37,8 @@ data/cifar10/*-python
 data/cifar100/*-python
 data/cinic10/
 
-data/MNIST/train
-data/MNIST/test
+data/MNIST/data/MNIST/non/train
+data/MNIST/data/MNIST/non/test
 data/shakespeare/train
 data/shakespeare/test
 data/stackoverflow/datasets

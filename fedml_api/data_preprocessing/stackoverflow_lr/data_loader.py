@@ -185,9 +185,9 @@ def load_partition_data_federated_stackoverflow_lr(dataset, data_dir, batch_size
         data_local_num_dict[client_idx] = local_data_num
         logging.info("client_idx = %d, local_sample_number = %d" %
                      (client_idx, local_data_num))
-        logging.info(
-            "client_idx = %d, batch_num_train_local = %d"
-            % (client_idx, len(train_data_local)))
+        # logging.info(
+        #     "client_idx = %d, batch_num_train_local = %d"
+        #     % (client_idx, len(train_data_local)))
         train_data_local_dict[client_idx] = train_data_local
         test_data_local_dict[client_idx] = test_data_local
 

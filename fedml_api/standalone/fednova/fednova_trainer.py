@@ -99,7 +99,7 @@ class FedNovaTrainer(object):
         if tau_eff == 0:
             tau_eff = sum(tau_effs)
         # get cum grad
-        # cum_grad = tau_eff * sum(norm_grads) 
+        # cum_grad = tau_eff * sum(norm_grads)
         cum_grad = norm_grads[0]
         for k in norm_grads[0].keys():
             for i in range(0, len(norm_grads)):
@@ -118,7 +118,10 @@ class FedNovaTrainer(object):
                     buf.mul_(self.args.gmf).add_(1/self.args.lr, cum_grad[k])
                 params[k].sub_(self.args.lr, buf)
             else:
-                params[k].sub_(cum_grad[k])
+                try:
+                    params[k].sub_(cum_grad[k])
+                except RuntimeError:
+                    params[k] = cum_grad[k]
 
         return params
 

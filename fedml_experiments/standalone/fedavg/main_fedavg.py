@@ -54,13 +54,13 @@ def add_args(parser):
     parser.add_argument('--partition_alpha', type=float, default=0.5, metavar='PA',
                         help='partition alpha (default: 0.5)')
 
-    parser.add_argument('--batch_size', type=int, default=128, metavar='N',
+    parser.add_argument('--batch_size', type=int, default=10, metavar='N',
                         help='input batch size for training (default: 64)')
 
     parser.add_argument('--client_optimizer', type=str, default='adam',
                         help='SGD with momentum; adam')
 
-    parser.add_argument('--lr', type=float, default=0.001, metavar='LR',
+    parser.add_argument('--lr', type=float, default=0.03, metavar='LR',
                         help='learning rate (default: 0.001)')
 
     parser.add_argument('--wd', help='weight decay parameter;', type=float, default=0.001)
@@ -74,7 +74,7 @@ def add_args(parser):
     parser.add_argument('--client_num_per_round', type=int, default=10, metavar='NN',
                         help='number of workers')
 
-    parser.add_argument('--comm_round', type=int, default=10,
+    parser.add_argument('--comm_round', type=int, default=200,
                         help='how many round of communications we shoud use')
 
     parser.add_argument('--frequency_of_the_test', type=int, default=5,
@@ -83,7 +83,7 @@ def add_args(parser):
     parser.add_argument('--gpu', type=int, default=0,
                         help='gpu')
 
-    parser.add_argument('--ci', type=int, default=0,
+    parser.add_argument('--ci', type=int, default=1,
                         help='CI')
     return parser
 
@@ -141,9 +141,11 @@ def load_data(args, dataset_name):
 
     elif dataset_name == "stackoverflow_lr":
         logging.info("load_data. dataset_name = %s" % dataset_name)
+
         client_num, train_data_num, test_data_num, train_data_global, test_data_global, \
         train_data_local_num_dict, train_data_local_dict, test_data_local_dict, \
         class_num = load_partition_data_federated_stackoverflow_lr(args.dataset, args.data_dir)
+
         args.client_num_in_total = client_num
 
     elif dataset_name == "stackoverflow_nwp":
@@ -201,9 +203,9 @@ def combine_batches(batches):
 def create_model(args, model_name, output_dim):
     logging.info("create_model. model_name = %s, output_dim = %s" % (model_name, output_dim))
     model = None
-    if model_name == "cnn" and args.dataset == "mnist":
+    if model_name == "lr" and args.dataset == "mnist":
         logging.info("LogisticRegression + MNIST")
-        model = CNN_OriginalFedAvg()
+        model = LogisticRegression(28 * 28, output_dim)
     elif model_name == "cnn" and args.dataset == "femnist":
         logging.info("CNN + FederatedEMNIST")
         model = CNN_DropOut(False)
@@ -249,10 +251,10 @@ if __name__ == "__main__":
     # Set the random seed. The np.random seed determines the dataset partition.
     # The torch_manual_seed determines the initial weight.
     # We fix these two, so that we can reproduce the result.
-    random.seed()
-    np.random.seed()
-    # torch.manual_seed()
-    # torch.cuda.manual_seed_all()
+    random.seed(0)
+    np.random.seed(0)
+    torch.manual_seed(0)
+    torch.cuda.manual_seed_all(0)
 
     # load data
     dataset = load_data(args, args.dataset)

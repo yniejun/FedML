@@ -45,7 +45,7 @@ public class DataLoader {
     private File POOLING_2D_DIR = new File(LOOKUP_TABLE_CELEBA_DIR, POOLING_2D);
     private File OUTPUT_DIR = new File(LOOKUP_TABLE_CELEBA_DIR, OUTPUT);
 
-    private void make_dir() {
+    public void make_dir() {
         // top dir
         if (!IRIS_DIR.exists()) {
             IRIS_DIR.mkdirs();

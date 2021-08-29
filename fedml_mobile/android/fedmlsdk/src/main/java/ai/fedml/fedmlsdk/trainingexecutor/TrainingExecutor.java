@@ -83,10 +83,11 @@ public class TrainingExecutor {
                     executorTopic = executorResponse.getExecutorTopic();
                     trainingTaskParam = executorResponse.getTrainingTaskArgs();
                     if (mFedMlTaskListener != null) {
+                        Log.d(TAG, "received: --" );
                         mFedMlTaskListener.onReceive(trainingTaskParam);
                     }
                 }
-                Log.d(TAG, "onResponse: " + executorResponse);
+                Log.d(TAG, "onResponse: --" + executorResponse);
             }
 
             @Override

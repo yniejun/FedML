@@ -180,4 +180,4 @@ if __name__ == '__main__':
     client_manager.run()
     client_manager.start_training()
 
-    time.sleep(100000)
+    time.sleep(30)

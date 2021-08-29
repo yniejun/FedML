@@ -33,6 +33,7 @@ class Client:
         self.local_training_data = local_training_data
         self.local_test_data = local_test_data
         self.local_sample_number = local_sample_number
+        logging.info("local sample num : %d", local_sample_number)
 
     def get_sample_number(self):
         return self.local_sample_number
@@ -40,7 +41,7 @@ class Client:
     def train(self, w_global):
         self.model.load_state_dict(w_global)
         self.model.to(self.device)
-
+        print(self.args.lr)
         # train and update
         if self.args.client_optimizer == "sgd":
             optimizer = torch.optim.SGD(self.model.parameters(), lr=self.args.lr)

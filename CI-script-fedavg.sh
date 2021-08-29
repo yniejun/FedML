@@ -91,8 +91,8 @@ bg_pid_client1=$!
 echo $bg_pid_client1
 
 #sleep 80
-#kill $bg_pid_server
-#kill $bg_pid_client0
-#kill $bg_pid_client1
+kill $bg_pid_server
+kill $bg_pid_client0
+kill $bg_pid_client1
 
-#cd ./../../../
+cd ./../../../

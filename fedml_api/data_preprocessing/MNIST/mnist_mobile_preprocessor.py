@@ -88,8 +88,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     main_args = add_args(parser)
-    train_path = "../../../../FedML/data/MNIST/train"
-    test_path = "../../../../FedML/data/MNIST/test"
+    train_path = "../../../data/MNIST/data/MNIST/non/train"
+    test_path = "../../../data/MNIST/data/MNIST/non/test"
     new_train = {}
     new_test = {}
 

@@ -113,7 +113,8 @@ android {
         }
 
         implementation fileTree(include: ['*.jar'], dir: 'libs')
-        implementation project(':fedml-iot-sdk')
+        implementation project(':fedmlsdk')
+        implementation project(':fedmliotsdk')
     }
 
     useLibrary 'org.apache.http.legacy'

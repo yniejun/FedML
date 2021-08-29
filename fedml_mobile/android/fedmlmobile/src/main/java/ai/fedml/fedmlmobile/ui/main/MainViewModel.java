@@ -15,12 +15,13 @@ import ai.fedml.fedmlsdk.utils.StorageUtils;
 public class MainViewModel extends ViewModel {
     public static final String TAG = "MainViewModel";
 
-    public static final String TRAINING_EXECUTOR_BASE_URL = "http://192.168.3.104:5000";
-    public static final String TRAINING_EXECUTOR_MQTT = "tcp://81.71.1.31:1883";
+    public static final String TRAINING_EXECUTOR_BASE_URL = "http://127.0.0.1:5000";
+    public static final String TRAINING_EXECUTOR_MQTT = "tcp://192.168.0.45:1883";
 
     void initial(@NonNull Context context) {
         FedMlMobileManager.getFedMlMobileApi().init(context, TRAINING_EXECUTOR_BASE_URL, TRAINING_EXECUTOR_MQTT);
         FedMlMobileManager.getFedMlMobileApi().setFedMlTaskListener((param) -> {
+            Log.d(TAG, "initial: --" );
             Log.d(TAG, "FedMlTask:" + param);
         });
     }

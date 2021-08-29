@@ -92,7 +92,7 @@ public class FLTrainer {
     private File POOLING_2D_DIR = new File(LOOKUP_TABLE_CELEBA_DIR, POOLING_2D);
     private File OUTPUT_DIR = new File(LOOKUP_TABLE_CELEBA_DIR, OUTPUT);
 
-    private void initialize(String layer) {
+    public void initialize(String layer) {
         int batch_size = 10;
         int num_iteration = 10;
         Random random = new Random();
@@ -175,7 +175,7 @@ public class FLTrainer {
         System.out.println();
     }
 
-    private void olaf_femnist() throws Exception {
+    public void olaf_femnist() throws Exception {
         int num_class = 62;
         Random random = new Random();
         int num_iteration = 10;
@@ -315,7 +315,7 @@ public class FLTrainer {
         }
     }
 
-    private void olaf_reddit() throws Exception {
+    public void olaf_reddit() throws Exception {
         //fixed params
         int batch_size = 10;
         int vocab_size = 10000;

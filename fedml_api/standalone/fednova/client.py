@@ -45,7 +45,10 @@ class Client:
         for k in cur_params.keys():
             scale = 1.0/opt.local_normalizing_vec
             cum_grad = init_params[k] - cur_params[k] 
-            cum_grad.mul_(weight*scale)
+            try:
+                cum_grad.mul_(weight*scale)
+            except RuntimeError:
+                pass
             grad_dict[k] = cum_grad
         return grad_dict
     
@@ -93,7 +96,7 @@ class Client:
                 loss.backward()
 
                 # to avoid nan loss
-                # torch.nn.utils.clip_grad_norm_(net.parameters(), 0.5)
+                torch.nn.utils.clip_grad_norm_(net.parameters(), 0.5)
 
                 optimizer.step()
                 # logging.info('Update Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(

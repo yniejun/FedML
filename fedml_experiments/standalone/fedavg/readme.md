@@ -1,5 +1,5 @@
 ## Experimental Tracking Platform (report real-time result to wandb.com, please change ID to your own)
-wandb login ee0b5f53d949c84cee7decbe7a629e63fb2f8408
+wandb login 3da5dc700f370e170bbc9d4e272d783c9d87cdc6
 
 
 ## Experiment Scripts

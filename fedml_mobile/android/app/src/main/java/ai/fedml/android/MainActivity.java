@@ -12,12 +12,16 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import ai.fedml.android.dataset.DataLoader;
+import ai.fedml.android.train.FLTrainer;
+
 public class MainActivity extends AppCompatActivity {
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private static int REQUEST_PERMISSION_CODE = 1; //请求状态码
 
+    FLTrainer trainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +38,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // make_dir();
+        new DataLoader().make_dir();
         // run initialize(String) to avoid cold boot
-        // initialize("rnn");
+        trainer = new FLTrainer();
+        trainer.initialize("cnn");
         System.out.println("finish initialize");
 
         onCLick();
@@ -65,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                     // modify the hyper-parameter if needed
                     // note that we only measure the training time of one batch, so the optimizer, params, initializer do not matter.
                     // functions we used are olaf_*
-                    // olaf_reddit();
+                     trainer.olaf_femnist();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
